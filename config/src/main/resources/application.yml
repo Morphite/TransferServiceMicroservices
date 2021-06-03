@@ -4,3 +4,10 @@ server:
 spring:
   application:
     name: config
+  cloud:
+    config:
+      server:
+        native:
+          search-locations: classpath:/shared
+  profiles:
+    active: native

@@ -1,17 +1,5 @@
 spring:
-  data:
-    mongodb:
-      database: transfer-service
-      port: 27017
   application:
     name: currency-converter
-
-server:
-  port: 8082
-
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
-  instance:
-    preferIpAddress: true
+  config:
+    import: optional:configserver:http://localhost:8888
