@@ -1,4 +1,4 @@
-package com.course.service;
+package com.course.model;
 
 public enum Currency {
     AED,
