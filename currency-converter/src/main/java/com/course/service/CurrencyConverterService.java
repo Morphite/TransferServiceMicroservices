@@ -1,10 +1,10 @@
 package com.course.service;
 
-import com.course.model.Currency;
+import com.course.model.ConvertResponse;
 
 import java.math.BigDecimal;
 
 public interface CurrencyConverterService {
 
-    BigDecimal convert(String from, String to, Double amount);
+    ConvertResponse convert(String from, String to, BigDecimal amount);
 }

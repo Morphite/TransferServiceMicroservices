@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.math.BigDecimal;
-import java.util.LinkedHashMap;
 
 @Service
 public class CurrencyConverterServiceImpl implements CurrencyConverterService {
@@ -20,11 +19,8 @@ public class CurrencyConverterServiceImpl implements CurrencyConverterService {
     }
 
     @Override
-    public BigDecimal convert(String from, String to, Double amount) {
-        ConvertResponse convertResponse = feignClient.convertCurrency(from, to, amount);
-        String rawResult = (String) ((LinkedHashMap) convertResponse.getRates().get("UAH")).get("rate_for_amount");
-
-        return new BigDecimal(rawResult);
+    public ConvertResponse convert(String from, String to, BigDecimal amount) {
+        return feignClient.convertCurrency(from, to, amount.doubleValue());
     }
 
     @FeignClient(value = "currency", url = "https://api.getgeoapi.com/v2")
