@@ -18,6 +18,11 @@ import {MatInputModule} from "@angular/material/input";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import { AccountComponent } from './components/account/account.component';
+import {RouterModule} from "@angular/router";
+import { ProfileComponent } from './components/profile/profile.component';
+import { TransfersComponent } from './components/transfers/transfers.component';
+import {FaIconLibrary, FontAwesomeModule} from "@fortawesome/angular-fontawesome";
+import {fas} from "@fortawesome/free-solid-svg-icons";
 
 @NgModule({
   declarations: [
@@ -25,13 +30,16 @@ import { AccountComponent } from './components/account/account.component';
     HomeComponent,
     LoginComponent,
     NavbarComponent,
-    AccountComponent
+    AccountComponent,
+    ProfileComponent,
+    TransfersComponent
   ],
   imports: [
     BrowserModule,
     NgbModule,
     BrowserAnimationsModule,
     RoutingModule,
+    RouterModule,
     LayoutModule,
     MatToolbarModule,
     MatButtonModule,
@@ -41,9 +49,16 @@ import { AccountComponent } from './components/account/account.component';
     MatInputModule,
     MatFormFieldModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    FontAwesomeModule
   ],
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+
+  constructor(library: FaIconLibrary) {
+    library.addIconPacks(fas);
+  }
+
+}
