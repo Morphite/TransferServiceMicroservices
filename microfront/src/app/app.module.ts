@@ -23,6 +23,7 @@ import { ProfileComponent } from './components/profile/profile.component';
 import { TransfersComponent } from './components/transfers/transfers.component';
 import {FaIconLibrary, FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 import {fas} from "@fortawesome/free-solid-svg-icons";
+import { SignUpComponent } from './components/sign-up/sign-up.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import {fas} from "@fortawesome/free-solid-svg-icons";
     NavbarComponent,
     AccountComponent,
     ProfileComponent,
-    TransfersComponent
+    TransfersComponent,
+    SignUpComponent
   ],
   imports: [
     BrowserModule,
