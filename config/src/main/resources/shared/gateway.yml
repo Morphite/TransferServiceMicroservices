@@ -1,0 +1,23 @@
+server:
+  port: 8111
+
+spring:
+  data:
+    mongodb:
+      database: transfer-service
+      port: 27017
+  cloud:
+    gateway:
+      routes:
+        - id: user-service
+          uri: lb://USER
+          predicates:
+            - Path=/user/**
+        - id: currency-converter-service
+          uri: lb://CURRENCY-CONVERTER
+          predicates:
+            - Path=/converter/**
+
+jwt:
+  secret: so secret
+  time: 3600000

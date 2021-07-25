@@ -1,17 +1,5 @@
-server:
-  port: 8111
-
 spring:
   application:
     name: gateway
-  cloud:
-    gateway:
-      routes:
-        - id: user-service
-          uri: lb://USER
-          predicates:
-            - Path=/user/**
-        - id: currency-converter-service
-          uri: lb://CURRENCY-CONVERTER
-          predicates:
-            - Path=/converter/**
+  config:
+    import: optional:configserver:http://localhost:8888
