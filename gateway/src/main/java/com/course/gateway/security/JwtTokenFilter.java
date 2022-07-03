@@ -1,26 +1,59 @@
 package com.course.gateway.security;
 
-import com.course.gateway.util.JwtUtil;
-import org.springframework.web.filter.OncePerRequestFilter;
+import com.course.gateway.jwt.JwtProvider;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.gateway.filter.GatewayFilter;
+import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.server.reactive.ServerHttpResponse;
+import org.springframework.stereotype.Component;
+import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Mono;
 
-import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.Objects;
+import java.nio.charset.StandardCharsets;
 
-public class JwtTokenFilter extends OncePerRequestFilter {
+@Component
+public class JwtTokenFilter extends AbstractGatewayFilterFactory<JwtTokenFilter.Config> {
 
-    private JwtUtil jwtUtil;
+    private final JwtProvider jwtProvider;
+    private final RouteValidator routeValidator;
 
-    private JwtUserDetailService userDetailService;
+    @Autowired
+    public JwtTokenFilter(JwtProvider jwtProvider, RouteValidator routeValidator) {
+        super(Config.class);
+        this.jwtProvider = jwtProvider;
+        this.routeValidator = routeValidator;
+    }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest req, HttpServletResponse resp, FilterChain fc) throws ServletException, IOException {
-        final String authHeader = req.getHeader("Authorization");
+    public GatewayFilter apply(Config config) {
+        return ((exchange, chain) -> {
+            if (routeValidator.isSecured.test(exchange.getRequest())) {
+                if (!exchange.getRequest().getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
+                    return sendError(exchange, "Missing Authorization Header!");
+                }
 
-        String tokenFromRequest = jwtUtil.getTokenFromRequest(req);
-        String username = jwtUtil.getUsername(tokenFromRequest);
+                String token = jwtProvider.getTokenFromRequest(exchange.getRequest());
+                if (!jwtProvider.validateToken(token)) {
+                    return sendError(exchange, "Invalid token!");
+                }
+            }
+
+            return chain.filter(exchange);
+        });
+    }
+
+    private Mono<Void> sendError(ServerWebExchange exchange, String message) {
+        ServerHttpResponse response = exchange.getResponse();
+        response.getHeaders().setContentType(MediaType.TEXT_PLAIN);
+        response.writeWith(Mono.just(response.bufferFactory().wrap(message.getBytes(StandardCharsets.UTF_8))));
+        response.setStatusCode(HttpStatus.UNAUTHORIZED);
+        return response.setComplete();
+    }
+
+    public static class Config {
 
     }
 }

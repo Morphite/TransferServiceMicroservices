@@ -1,4 +1,4 @@
-package model;
+package com.course.gateway.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -24,13 +24,16 @@ public class User {
     private String pass;
 
     @JsonProperty
+    private String email;
+
+    @JsonProperty
     private String name;
 
     @JsonProperty
     private String surname;
 
     @JsonProperty
-    private String role;
+    private Role role;
 
     public User() {
         this.id = UUID.randomUUID().toString();
